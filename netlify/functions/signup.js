@@ -6,13 +6,13 @@ const redirect = (path) =>
   new Response(null, { status: 302, headers: { Location: path } });
 
 // -- handler -----------------------------------------------------------------
-export default async (event) => {
-  if (event.request.method !== 'POST') {
+export default async (request) => {
+  if (request.method !== 'POST') {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
   // Parse form (application/x-www-form-urlencoded)
-  const formData = await event.request.formData();
+  const formData = await request.formData();
   const email     = formData.get('email');
   const fullName  = formData.get('fullName');
   const distance  = formData.get('distance');
@@ -23,7 +23,7 @@ export default async (event) => {
       to:   email,
       subject: 'Your Centennial Park Marathon “ticket”',
       html: `
-        <h2>You’re registered!</h2>
+        <h2>You're registered!</h2>
         <p>Hi ${fullName},</p>
         <p>See you on <b>19 July 2025</b> for the <b>${distance}</b>.</p>
       `,
