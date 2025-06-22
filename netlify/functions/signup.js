@@ -1,35 +1,38 @@
-import { Resend } from 'resend';          // npm module automatically bundled
+import { Resend } from 'resend';
+
+// -- init --------------------------------------------------------------------
 const resend = new Resend(process.env.RESEND_API_KEY);
+const redirect = (path) =>
+  new Response(null, { status: 302, headers: { Location: path } });
 
+// -- handler -----------------------------------------------------------------
 export default async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+  if (event.request.method !== 'POST') {
+    return new Response('Method Not Allowed', { status: 405 });
   }
-  
-  // Netlify > Forms > function payload
-  const payload = JSON.parse(event.body);
-  const data = payload?.payload?.data || payload;   // covers both local + prod
-  const { email, fullName, distance } = data;
 
-  const html = `
-    <h2>Centennial Park Marathon - you're registered!</h2>
-    <p>Hi ${fullName},</p>
-    <p>Thanks for signing up for the <strong>${distance}</strong> on
-       <strong>19 July 2025</strong>.</p>
-    <p>One job left: run it 🙂 - we'll e-mail your PDF certificate afterwards.</p>
-    <p style="margin-top:2em;">— The totally-unofficial organising committee</p>
-  `;
+  // Parse form (application/x-www-form-urlencoded)
+  const formData = await event.request.formData();
+  const email     = formData.get('email');
+  const fullName  = formData.get('fullName');
+  const distance  = formData.get('distance');
 
   try {
     await resend.emails.send({
-      from: 'Centennial Park Marathon <noreply@centennialparkmarathon.com>',
-      to: email,
+      from: 'Centennial Park Marathon <tickets@resend.dev>', // any verified sender
+      to:   email,
       subject: 'Your Centennial Park Marathon “ticket”',
-      html
+      html: `
+        <h2>You’re registered!</h2>
+        <p>Hi ${fullName},</p>
+        <p>See you on <b>19 July 2025</b> for the <b>${distance}</b>.</p>
+      `,
     });
-    return { statusCode: 200 };               // let Netlify mark submission “ok”
+    console.log(`✉️  Confirmation sent to ${email}`);
   } catch (err) {
-    console.error(err);
-    return { statusCode: 500, body: JSON.stringify(err) };
+    console.error('Email failed:', err);
+    /* fall through to redirect anyway so the visitor isn't stuck */
   }
+
+  return redirect('/success.html');
 };
