@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <title>Centennial Park Marathon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex flex-col min-h-full">
+  <!-- hero / masthead -->
+  <header class="relative">
+    <img src="/images/centennial-hero.jpg"
+         alt="Centennial Park, Sydney"
+         class="w-full h-64 object-cover" />
+    <h1 class="absolute inset-0 flex items-center justify-center
+               text-white text-4xl md:text-6xl font-extrabold drop-shadow-lg">
+      Centennial&nbsp;Park&nbsp;Marathon
+    </h1>
+  </header>
+
+  <!-- main -->
+  <main class="flex-grow container mx-auto px-4 py-10 prose">
+    <h2>19&nbsp;July&nbsp;2025 · Sydney</h2>
+    <p>
+      Pick your distance (10 km · 21.1 km · 42.2 km),
+      run some laps around Centennial Park, get a shiny PDF finish certificate.
+      Totally unofficial, totally free, totally for fun.
+    </p>
+
+    <!-- Netlify Form -->
+    <form name="signup" method="POST"
+          data-netlify="true" data-netlify-honeypot="bot-field"
+          action="/success.html" class="mt-8 max-w-md">
+      <input type="hidden" name="form-name" value="signup" />
+      <p class="hidden">
+        <label>Don’t fill this out: <input name="bot-field" /></label>
+      </p>
+
+      <label class="block mb-4">
+        <span class="text-gray-700">Full name *</span>
+        <input name="fullName" required
+               class="mt-1 block w-full rounded border-gray-300" />
+      </label>
+
+      <label class="block mb-4">
+        <span class="text-gray-700">Email *</span>
+        <input name="email" type="email" required
+               class="mt-1 block w-full rounded border-gray-300" />
+      </label>
+
+      <label class="block mb-4">
+        <span class="text-gray-700">Distance *</span>
+        <select name="distance" required
+                class="mt-1 block w-full rounded border-gray-300">
+          <option value="">— choose —</option>
+          <option>10 km</option>
+          <option>Half marathon (21.1 km)</option>
+          <option>Marathon (42.2 km)</option>
+        </select>
+      </label>
+
+      <label class="inline-flex items-center text-sm">
+        <input type="checkbox" required class="rounded border-gray-300" />
+        <span class="ml-2">
+          I understand this is an unofficial fun run; I participate at my own risk.
+        </span>
+      </label>
+
+      <button class="mt-6 bg-green-600 hover:bg-green-700
+                     text-white font-semibold py-3 px-6 rounded">
+        Sign me up!
+      </button>
+    </form>
+  </main>
+
+  <footer class="bg-gray-100 text-center text-sm py-4 text-gray-600">
+    © 2025 Centennial Park Marathon — unofficial.<br/>
+    Admin view? Check your Netlify dashboard.
+  </footer>
+</body>
+</html>
