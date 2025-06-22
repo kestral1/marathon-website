@@ -2,17 +2,21 @@ import { Resend } from 'resend';          // npm module automatically bundled
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+  
   // Netlify > Forms > function payload
   const payload = JSON.parse(event.body);
   const data = payload?.payload?.data || payload;   // covers both local + prod
   const { email, fullName, distance } = data;
 
   const html = `
-    <h2>Centennial Park Marathon – you’re registered!</h2>
+    <h2>Centennial Park Marathon - you're registered!</h2>
     <p>Hi ${fullName},</p>
     <p>Thanks for signing up for the <strong>${distance}</strong> on
        <strong>19 July 2025</strong>.</p>
-    <p>One job left: run it 🙂 – we’ll e-mail your PDF certificate afterwards.</p>
+    <p>One job left: run it 🙂 - we'll e-mail your PDF certificate afterwards.</p>
     <p style="margin-top:2em;">— The totally-unofficial organising committee</p>
   `;
 
