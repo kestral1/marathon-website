@@ -1,10 +1,14 @@
+# Tell Netlify where to find static files and functions
 [build]
+  publish   = "."
   functions = "netlify/functions"
 
+# Always bundle functions with esbuild (works with ESM)
 [functions]
-  external_node_modules = ["resend"]   # bundle the email SDK
+  node_bundler = "esbuild"
 
+# Dev/prod redirect: /api/* → /.netlify/functions/*
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  from   = "/api/*"
+  to     = "/.netlify/functions/:splat"
   status = 200
